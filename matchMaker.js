@@ -12,9 +12,31 @@
  * @returns {string}
  */
 function matchMaker(inputData) {
-  // Parse the input  separate both demand and supply  into different objects;
-  // Match for each supply what is the most profitable demand requirement ;
+
+  function parseInput(inputData) {
+    // parse the supply and demand data ;
+
+  }
+
+  function formatSupply(parsedData) {
+    // format the parsed supplyData into an object
+  }
+
+  function formatDemand(parsedData) {
+    // format the parsed demandData into an object
+
+  }
+
+  function matcher(formatedSupply, formatedDemand) {
+    // Match for each supply what is the most profitable demand requirement ;
+  }
+
   // Format the match and return the output in the desired format;
+  function formatData(matchedData) {
+    // Format the matched demand and supply datatype into output of string format and return it ;
+  }
+
+  return OutputData;
 }
 
 
