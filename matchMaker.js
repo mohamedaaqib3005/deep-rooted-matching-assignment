@@ -35,9 +35,10 @@ s4 09:45 tomato 110/kg 11kg
       .split("\n")
       .filter((line) => line.trim())
       .map((line) => {
-        const [id, time, vegetable, price, quantity] = line;
+        const [id, time, vegetable, price, quantity] = line.trim().split(" ");
         return {
-          line
+          id, time, vegetable, price, quantity
+
         }
       })
   }
