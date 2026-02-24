@@ -11,12 +11,38 @@
  * @param {string} inputData
  * @returns {string}
  */
-function matchMaker(inputData) {
 
+
+
+
+
+function matchMaker(input) {
+  const inputData = `
+   d1 09:47 tomato 110/kg 1kg
+d2 09:45 potato 110/kg 10kg
+d3 09:48 tomato 110/kg 10kg
+
+s1 09:45 potato 110/kg 1kg
+s2 09:45 potato 110/kg 7kg
+s3 09:45 potato 110/kg 2kg
+s4 09:45 tomato 110/kg 11kg
+
+`;
   function parseInput(inputData) {
-    // parse the supply and demand data ;
-
+    // parse the supply and demand data ;function parseInput(inputData) {
+    return inputData
+      .trim()
+      .split("\n")
+      .filter((line) => line.trim())
+      .map((line) => {
+        const [id, time, vegetable, price, quantity] = line;
+        return {
+          line
+        }
+      })
   }
+
+
 
   function formatSupply(parsedData) {
     // format the parsed supplyData into an object
@@ -35,8 +61,21 @@ function matchMaker(inputData) {
   function formatData(matchedData) {
     // Format the matched demand and supply datatype into output of string format and return it ;
   }
-
-  return OutputData;
+  console.log(parseInput(inputData));
+  // return OutputData;
 }
+matchMaker()
+
+// matchMaker(inputData)
+
+
+
+// function parseInput(inputData) {
+//   const parsedInput = inputData.split();
+//   console.log(parsedInput)
+// }
+
+
+// parseInput(inputData)
 
 
