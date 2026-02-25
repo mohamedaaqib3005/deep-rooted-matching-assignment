@@ -32,8 +32,11 @@ s4 09:45 tomato 110/kg 11kg
       .map((line) => {
         const [id, time, vegetable, price, quantity] = line.trim().split(" ");
         return {
-          id, time, vegetable, price, quantity
-
+          id: id,
+          time: time,
+          vegetable: vegetable,
+          price: Number(price.replace("/kg", "")),
+          quantity: Number(quantity.replace("kg", ""))
         }
       })
 
@@ -63,12 +66,12 @@ s4 09:45 tomato 110/kg 11kg
     return demand;
   }
 
-  function matcher(supply, demand) {
+  function matcher(supplies, demands) {
     // Match for each supply what is the most profitable demand requirement ;
     let matchedArray = []
-    for (let supplyEntry of supply) {
-      for (let demandEntry of demand) {
-        if (supplyEntry.vegetable === demandEntry.vegetable & supplyEntry.quantity >= demandEntry.quantity & supplyEntry.price <= demandEntry.price) {
+    for (let demandEntry of demands) {
+      for (let supplyEntry of supplies) {
+        if (supplyEntry.vegetable === demandEntry.vegetable && supplyEntry.quantity >= demandEntry.quantity && supplyEntry.price <= demandEntry.price) {
           matchedArray.push(
             {
               matched: {
@@ -88,11 +91,20 @@ s4 09:45 tomato 110/kg 11kg
     // Format the matched demand and supply datatype into output of string format and return it ;
   }
   const parsed = parseInput(inputData)
+
+  const supplies = formatSupply(parsed);
+  const demands = formatDemand(parsed);
+
+  supplies.sort((a, b) => a.time.localeCompare(b.time));
+  demands.sort((a, b) => a.time.localeCompare(b.time));
+
   console.log(parseInput(inputData))
-  console.log(formatSupply(parsed))
-  console.log(formatDemand(parsed))
-  console.dir(matcher(formatSupply(parsed), formatDemand(parsed)), { depth: null })
-  // return OutputData;
+  console.log(formatSupply(supplies))
+  console.log(formatDemand(demands))
+  console.dir(
+    matcher(supplies, demands),
+    { depth: null }
+  );  // return OutputData;
 }
 matchMaker()
 
