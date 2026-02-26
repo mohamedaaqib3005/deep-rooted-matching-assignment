@@ -66,7 +66,7 @@ function matchOrders(inputData) {
     return demands;
   }
 
-  function applyPriceTimePriority(supplies, demands) {
+  function sortByPriceTimePriority(supplies, demands) {
 
     supplies.sort((a, b) =>
       a.price !== b.price
@@ -134,7 +134,7 @@ function matchOrders(inputData) {
   const supplies = separateSupplies(orders);
   const demands = separateDemands(orders);
 
-  applyPriceTimePriority(supplies, demands);
+  sortByPriceTimePriority(supplies, demands);
 
   const trades =
     executeMatching(supplies, demands);
