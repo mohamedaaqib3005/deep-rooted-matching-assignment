@@ -4,28 +4,28 @@
 //--->If no supply is available at that moment move to the next demand follow FIFO
 //--->Only make the deal if the demand price is more or equal to supply price and demand required quantity is less than or equal to supply quantity
 //--->If deal is done then display in the format of demand order id followed by supply order id, price/kg & finally quantity for which deal is done.
+const inputData = `
+d1 09:47 tomato 110/kg 1kg
+d2 09:45 potato 150/kg 10kg
+d3 09:48 tomato 190/kg 10kg
 
+s1 09:45 potato 90/kg 1kg
+s2 09:43 potato 60/kg 7kg
+s3 09:45 potato 55/kg 2kg
+s4 09:45 tomato 20/kg 11kg
+
+`;
 
 /**
  * Returns the matched outputData
  * @param {string} inputData
  * @returns {string}
  */
-function matchMaker(input) {
-  const inputData = `
-d1 09:47 tomato 110/kg 1kg
-d2 09:45 potato 110/kg 10kg
-d3 09:48 tomato 110/kg 10kg
+function matchOrders(inputData) {
 
-s1 09:45 potato 110/kg 1kg
-s2 09:45 potato 110/kg 7kg
-s3 09:45 potato 110/kg 2kg
-s4 09:45 tomato 110/kg 11kg
-
-`;
-  function parseInput(inputData) {
+  function parseOrders(rawInput) {
     // parse the supply and demand data ;function parseInput(inputData) {
-    return inputData
+    return rawInput
       .trim()
       .split("\n")
       .filter((line) => line.trim())
@@ -44,69 +44,115 @@ s4 09:45 tomato 110/kg 11kg
 
 
 
-  function formatSupply(parsed) {
+  function separateSupplies(orders) {
     // format the parsed supplyData into an object
-    let supply = [];
-    for (let object of parsed) {
+    let supplies = [];
+    for (let object of orders) {
       console.log(object)
       if (object.id.startsWith("s"))
-        supply.push(object);
+        supplies.push(object);
     }
-    return supply;
+    return supplies;
   }
 
-  function formatDemand(parsed) {
+  function separateDemands(orders) {
     // format the parsed demandData into an object
-    let demand = [];
-    for (let object of parsed) {
+    let demands = [];
+    for (let object of orders) {
       if (object.id.startsWith("d")) {
-        demand.push(object);
+        demands.push(object);
       }
     }
-    return demand;
+    return demands;
   }
 
-  function matcher(supplies, demands) {
-    // Match for each supply what is the most profitable demand requirement ;
-    let matchedArray = []
-    for (let demandEntry of demands) {
-      for (let supplyEntry of supplies) {
-        if (supplyEntry.vegetable === demandEntry.vegetable && supplyEntry.quantity >= demandEntry.quantity && supplyEntry.price <= demandEntry.price) {
-          matchedArray.push(
-            {
-              matched: {
-                demand: demandEntry,
-                supply: supplyEntry
-              },
-            }
-          );
-        }
-      }
-    }
-    return matchedArray;
+  function applyPriceTimePriority(supplies, demands) {
+
+    supplies.sort((a, b) =>
+      a.price !== b.price
+        ? a.price - b.price
+        : a.time.localeCompare(b.time)
+    );
+
+    demands.sort((a, b) =>
+      a.price !== b.price
+        ? b.price - a.price
+        : a.time.localeCompare(b.time)
+    );
   }
+
+
+
+  function executeMatching(supplies, demands) {
+    // Match for each supply what is the most profitable demand requirement ;
+    console.log("supplies", supplies);
+    console.log("demands", demands)
+    let trades = []
+    for (let buyOrder of demands) {
+      for (let sellOrder of supplies) {
+
+        if (sellOrder.quantity === 0) continue;
+        if (sellOrder.vegetable !== buyOrder.vegetable) continue;
+        if (buyOrder.price < sellOrder.price) continue;
+
+        const tradeQty = Math.min(buyOrder.quantity, sellOrder.quantity);
+
+        buyOrder.quantity -= tradeQty;
+        sellOrder.quantity -= tradeQty;
+
+        trades.push(
+          {
+            traded: {
+              demand: buyOrder.id,
+              supply: sellOrder.id,
+              price: `${sellOrder.price}/kg`,
+              quantity: `${tradeQty}kg`
+            },
+          }
+        );
+
+        if (buyOrder.quantity === 0) break;
+
+      }
+
+
+    }
+    return trades;
+
+  }
+
 
   // Format the match and return the output in the desired format;
-  function formatData(matchedData) {
+  function formatTrades(trades) {
     // Format the matched demand and supply datatype into output of string format and return it ;
+
+
   }
-  const parsed = parseInput(inputData)
 
-  const supplies = formatSupply(parsed);
-  const demands = formatDemand(parsed);
+  const orders = parseOrders(inputData)
 
-  supplies.sort((a, b) => a.time.localeCompare(b.time));
-  demands.sort((a, b) => a.time.localeCompare(b.time));
+  const supplies = separateSupplies(orders);
+  const demands = separateDemands(orders);
 
-  console.log(parseInput(inputData))
-  console.log(formatSupply(supplies))
-  console.log(formatDemand(demands))
-  console.dir(
-    matcher(supplies, demands),
-    { depth: null }
-  );  // return OutputData;
+  applyPriceTimePriority(supplies, demands);
+
+  const trades =
+    executeMatching(supplies, demands);
+  console.log("trades", trades);
+  return formatTrades(trades);
+
+
+
+  // console.log(parseOrders(inputData))
+  // console.log(separateSupplies(supplies))
+  // console.log(separateDemands(demands))
+  // console.dir(
+  //   executeMatching(supplies, demands),
+  //   { depth: null }
+  // );
+  // return OutputData;
 }
-matchMaker()
+matchOrders(inputData)
 
 
 
