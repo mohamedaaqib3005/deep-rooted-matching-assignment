@@ -125,8 +125,15 @@ function matchOrders(inputData) {
   // Format the match and return the output in the desired format;
   function formatTrades(trades) {
     // Format the matched demand and supply datatype into output of string format and return it ;
+    const outputArray = trades.map((trade) => {
+      const { demand, supply, price, quantity } = trade.traded;
 
+      return `${demand}${supply}${price}${quantity}`
 
+    })
+
+    const formattedOutput = outputArray.join("\n")
+    return formattedOutput;
   }
 
   const orders = parseOrders(inputData)
@@ -139,8 +146,10 @@ function matchOrders(inputData) {
   const trades =
     executeMatching(supplies, demands);
   console.log("trades", trades);
-  return formatTrades(trades);
+  console.log(formatTrades(trades))
 
+  return formatTrades(trades);
+  console.log(formatTrades)
 
 
   // console.log(parseOrders(inputData))
